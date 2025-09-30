@@ -278,6 +278,7 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
         }
         public override void VisitClassDeclaration(ClassDeclarationSyntax node)
         {
+            // Early exit, yeet it
             if (node.BaseList is null)
             {
                 base.VisitClassDeclaration(node);
@@ -297,7 +298,7 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
 
                 fullName += _additionalName;
             }
-            
+
             BaseName = baseName;
             _fullName = fullName;
 
@@ -305,45 +306,19 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
             {
                 _constraints = node.ConstraintClauses.ToString();
             }
-            
+
             var firstBaseType = node.BaseList.Types.First();
             var baseTypeName = firstBaseType.Type.ToString();
-            
+
             _baseType = baseTypeName;
             if (baseTypeName.Contains("ProxyVoidNode"))
             {
                 _baseTypeNamespace = "FrooxEngine.FrooxEngine.ProtoFlux.";
             }
 
-            if (!node.AttributeLists.Any())
-            {
-                base.VisitClassDeclaration(node);
-                return;
-            }
-
-            var find = node.AttributeLists.SelectMany(i => i.Attributes)
-                .FirstOrDefault(i => i.Name.ToString() == "NodeCategory");
-
-            _genericTypesAttribute = node.AttributeLists.FirstOrDefault(attrList => attrList.Attributes.Any(attr => attr.Name.ToString() == "GenericTypes"))?.ToString();
-
-            _oldTypeNameAttribute = node.AttributeLists.FirstOrDefault(attrList => attrList.Attributes.Any(attr => attr.Name.ToString() == "OldTypeName"))?.ToString();
-
-            if (find?.ArgumentList is null)
-            {
-                base.VisitClassDeclaration(node);
-                return;
-            }
-            
-            _category = find.ArgumentList.Arguments.First().ToString().TrimEnds(1,1);
-            
-            var findName = node.AttributeLists.SelectMany(i => i.Attributes)
-                .FirstOrDefault(i => i.Name.ToString() == "NodeName");
-
-
-            if (findName?.ArgumentList != null)
-                _nodeNameOverride =
-                    $"    public override string NodeName => {findName.ArgumentList.Arguments.First().ToString()};";
-            
+            // Check if this class inherits from a valid node type
+            // This validation should happen regardless of attributes i hope
+            bool foundValidNodeType = false;
             foreach (var u in _usingDeclarations)
             {
                 var fullNameSpace = "";
@@ -355,13 +330,48 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
                 var match = ValidNodeTypes.FirstOrDefault(i => fullNameSpace.StartsWith(FluxPrefix + i));
 
                 if (match is null) continue;
-                
+
                 _match = match;
                 _fullBaseType = fullNameSpace;
-                _valid = true;
+                foundValidNodeType = true;
+                break; // Found a valid node type dont bother checking further
+            }
+
+            if (!foundValidNodeType)
+            {
                 base.VisitClassDeclaration(node);
                 return;
             }
+
+            // Process attributes if they exist
+            if (node.AttributeLists.Any())
+            {
+                var find = node.AttributeLists.SelectMany(i => i.Attributes)
+                    .FirstOrDefault(i => i.Name.ToString() == "NodeCategory");
+
+                _genericTypesAttribute = node.AttributeLists.FirstOrDefault(attrList =>
+                    attrList.Attributes.Any(attr => attr.Name.ToString() == "GenericTypes"))?.ToString();
+
+                _oldTypeNameAttribute = node.AttributeLists.FirstOrDefault(attrList =>
+                    attrList.Attributes.Any(attr => attr.Name.ToString() == "OldTypeName"))?.ToString();
+
+                // Only process NodeCategory if it exists and has arguments
+                if (find?.ArgumentList is not null)
+                {
+                    _category = find.ArgumentList.Arguments.First().ToString().TrimEnds(1, 1);
+                }
+
+                var findName = node.AttributeLists.SelectMany(i => i.Attributes)
+                    .FirstOrDefault(i => i.Name.ToString() == "NodeName");
+
+                if (findName?.ArgumentList != null)
+                    _nodeNameOverride =
+                        $"    public override string NodeName => {findName.ArgumentList.Arguments.First().ToString()};";
+            }
+
+            // Mark as valid since we found a valid node type
+            _valid = true;
+
             base.VisitClassDeclaration(node);
         }
     }
