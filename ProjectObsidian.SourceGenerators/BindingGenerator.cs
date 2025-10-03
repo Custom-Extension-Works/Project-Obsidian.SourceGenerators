@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -32,7 +33,10 @@ namespace SourceGenerators
                 var res = result.ToString();
 
                 if (!string.IsNullOrWhiteSpace(res))
+                {
                     context.AddSource($"{walker.BaseName}Bindings.g.cs", result.ToString());
+                    File.WriteAllText($"C:\\ObsidianBindingsDebug\\{walker.BaseName}Bindings.g.cs", res);
+                }
             }
         }
     }
