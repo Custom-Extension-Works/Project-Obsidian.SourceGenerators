@@ -164,7 +164,7 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
 {_nodeNameOverride}
 {(_isValidGenericTypeMethod ? $"    public static bool IsValidGenericType => global::{_currentNameSpace}.{_fullName}.IsValidGenericType;" : "")}
     public override System.Type NodeType => typeof (global::{_currentNameSpace}.{_fullName});
-{(!_isAbstract ? "    public global::{_currentNameSpace}.{_fullName} TypedNodeInstance { get; private set; }" : "")}
+{(!_isAbstract ? $"    public global::{_currentNameSpace}.{_fullName}" + " TypedNodeInstance { get; private set; }" : "")}
 {(!_isAbstract ? "    public override INode NodeInstance => (INode)this.TypedNodeInstance;" : "")}
 {(!_isAbstract ? "    public override void ClearInstance() => this.TypedNodeInstance = null;" : "")}
 {CountOverride}
