@@ -298,7 +298,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
                 return;
             }
 
-            if (node.BaseList.Types.Any(t => t.Type.ToString().Contains("ExecutionNode")))
+            if (node.BaseList.Types.Any(t => t.Type.ToString().Contains("ProtoFlux.Runtimes.Execution.ExecutionNode")))
             {
                 _valid = true;
             }
