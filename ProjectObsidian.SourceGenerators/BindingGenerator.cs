@@ -112,7 +112,8 @@ namespace SourceGenerators
             "AsyncActionFlowNode", 
             "AsyncActionBreakableFlowNode",
 
-            "ProxyVoidNode"
+            "ProxyVoidNode",
+            "AudioNodeBase"
         };
 
         private string UsingEnumerate =>
@@ -371,25 +372,23 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
                     _nodeOverloadAttribute = $"[Grouping({findOverload.ArgumentList.Arguments.First().ToString()})]";
             }
 
-            //foreach (var u in _usingDeclarations)
-            //{
-            //    var fullNameSpace = "";
-            //    if (string.IsNullOrEmpty(u))
-            //        fullNameSpace = baseTypeName;
-            //    else
-            //        fullNameSpace = u + "." + baseTypeName;
+            foreach (var u in _usingDeclarations)
+            {
+                var fullNameSpace = "";
+                if (string.IsNullOrEmpty(u))
+                    fullNameSpace = baseTypeName;
+                else
+                    fullNameSpace = u + "." + baseTypeName;
 
-            //    var match = ValidNodeTypes.FirstOrDefault(i => fullNameSpace.StartsWith(FluxPrefix + i));
+                var match = ValidNodeTypes.FirstOrDefault(i => fullNameSpace.StartsWith(FluxPrefix + i));
 
-            //    if (match is null) continue;
-                
-            //    _match = match;
-            //    _fullBaseType = fullNameSpace;
-            //    _valid = true;
-            //    break;
-            //}
+                if (match is null) continue;
 
-            _valid = true;
+                _match = match;
+                _fullBaseType = fullNameSpace;
+                _valid = true;
+                break;
+            }
 
             base.VisitClassDeclaration(node);
         }
