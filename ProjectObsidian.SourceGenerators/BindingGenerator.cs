@@ -228,8 +228,15 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
             TypedFieldDetection(type, name, "ValueOutput", "global::FrooxEngine.ProtoFlux.NodeValueOutput<{1}>", _outputCount);
             
             //impulses
-            if (!UntypedFieldDetection(type, name, "AsyncCall", "global::FrooxEngine.SyncRef<global::FrooxEngine.ProtoFlux.INodeOperation>", _impulseCount))
+            if (type == "AsyncCall")
+            {
+                UntypedFieldDetection(type, name, "AsyncCall", "global::FrooxEngine.SyncRef<global::FrooxEngine.ProtoFlux.INodeOperation>", _impulseCount);
+            }
+            else if (type == "Call")
+            {
                 UntypedFieldDetection(type, name, "Call", "global::FrooxEngine.SyncRef<global::FrooxEngine.ProtoFlux.ISyncNodeOperation>", _impulseCount);
+            }
+
             UntypedFieldDetection(type, name, "Continuation", "global::FrooxEngine.SyncRef<global::FrooxEngine.ProtoFlux.INodeOperation>", _impulseCount);
             UntypedFieldDetection(type, name, "AsyncResumption", "global::FrooxEngine.SyncRef<global::FrooxEngine.ProtoFlux.INodeOperation>", _impulseCount);
 
@@ -256,6 +263,13 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
             //operation lists
             UntypedFieldDetection(type, name, "AsyncOperationList", "global::FrooxEngine.SyncList<global::FrooxEngine.ProtoFlux.AsyncNodeOperation>", _operationListCount);
             UntypedFieldDetection(type, name, "SyncOperationList", "global::FrooxEngine.SyncList<global::FrooxEngine.ProtoFlux.SyncNodeOperation>", _operationListCount);
+
+
+            //call lists
+            if (type == "CallList")
+                UntypedFieldDetection(type, name, "CallList", "global::FrooxEngine.SyncRefList<global::FrooxEngine.ProtoFlux.ISyncNodeOperation>", _impulseListCount);
+            else
+                UntypedFieldDetection(type, name, "AsyncCallList", "global::FrooxEngine.SyncRefList<global::FrooxEngine.ProtoFlux.INodeOperation>", _impulseListCount);
 
             base.VisitFieldDeclaration(node);
         }
