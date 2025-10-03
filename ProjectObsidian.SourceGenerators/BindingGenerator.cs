@@ -298,7 +298,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
                 return;
             }
 
-            if (node.Modifiers.Any(m => m.ToString() == "abstract"))// && _currentNameSpace.ToLower().Contains("obsidian"))
+            if (node.Modifiers.Any(m => m.ToString() == "abstract"))
             {
                 _isAbstract = true;
             }
