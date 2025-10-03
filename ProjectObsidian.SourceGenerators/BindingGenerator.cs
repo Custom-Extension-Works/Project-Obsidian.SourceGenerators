@@ -333,6 +333,10 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
             {
                 _baseTypeNamespace = "FrooxEngine.FrooxEngine.ProtoFlux.";
             }
+            else if (baseTypeName.Contains("AudioNodeBase"))
+            {
+                _baseTypeNamespace = "ProtoFlux.Runtimes.Execution.Nodes.Obsidian.Audio.";
+            }
 
             //if (baseTypeName.Contains("AudioNodeBase"))
             //{
