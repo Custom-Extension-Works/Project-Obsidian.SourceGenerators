@@ -317,7 +317,7 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
                 _baseTypeNamespace = "FrooxEngine.FrooxEngine.ProtoFlux.";
             }
 
-            if (node.AttributeLists.Any()) // if no attributes
+            if (node.AttributeLists.Any()) // if has any attributes
             {
                 // category
                 var nodeCategoryAttr = node.AttributeLists.SelectMany(i => i.Attributes)
