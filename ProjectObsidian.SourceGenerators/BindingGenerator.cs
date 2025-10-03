@@ -172,10 +172,13 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
     public override N Instantiate<N>()
     {
         if (this.TypedNodeInstance != null) throw new System.InvalidOperationException("Node has already been instantiated");
+""" + $"""
         var localVar = new global::{_currentNameSpace}.{_fullName}();
         this.TypedNodeInstance = localVar;
         return localVar as N;
+""" + """
     }
+""" + $"""
     protected override void AssociateInstanceInternal(INode node) => this.TypedNodeInstance = node is global::{_currentNameSpace}.{_fullName} localVar ? localVar : throw new System.ArgumentException("Node instance is not of type " + typeof (global::{_currentNameSpace}.{_fullName})?.ToString());
 """ : "")}
 {GetOverride}
