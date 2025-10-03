@@ -157,7 +157,7 @@ namespace {BindingPrefix}{_currentNameSpace};
 {_genericTypesAttribute}
 {_oldTypeNameAttribute}
 [Category(new string[] {{""ProtoFlux/Runtimes/Execution/Nodes/{_category}""}})]
-public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_constraints}
+public partial {(_isAbstract ? "abstract" : "")} class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_constraints}
 {{
 {(string.IsNullOrEmpty(_debug) ? "" : "//")}{_debug}
 {Declarations}
