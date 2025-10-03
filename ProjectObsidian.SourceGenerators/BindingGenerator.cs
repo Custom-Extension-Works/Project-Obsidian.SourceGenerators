@@ -286,6 +286,12 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
                 return;
             }
 
+            if (node.Modifiers.Any(m => m.ToString() == "abstract"))
+            {
+                base.VisitClassDeclaration(node);
+                return;
+            }
+
             var baseName = node.Identifier.Text;
             var fullName = baseName;
 
