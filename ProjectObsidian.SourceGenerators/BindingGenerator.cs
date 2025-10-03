@@ -400,7 +400,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
             //    break;
             //}
 
-            _valid = true;
+            //_valid = true;
 
             base.VisitClassDeclaration(node);
         }
