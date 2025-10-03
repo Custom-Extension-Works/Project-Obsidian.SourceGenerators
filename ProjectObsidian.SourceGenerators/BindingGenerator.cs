@@ -149,6 +149,7 @@ using {_currentNameSpace};
 
 namespace {BindingPrefix}{_currentNameSpace};
 
+{_nodeOverloadAttribute}
 {_genericTypesAttribute}
 {_oldTypeNameAttribute}
 [Category(new string[] {{""ProtoFlux/Runtimes/Execution/Nodes/{_category}""}})]
@@ -194,6 +195,7 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
         private string _constraints = "";
         private string _genericTypesAttribute;
         private string _oldTypeNameAttribute;
+        private string _nodeOverloadAttribute;
 
         private bool TypedFieldDetection(string type, string name, string targetTypeName, string declarationFormat, OrderedCount counter)
         {
@@ -343,6 +345,13 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
             if (findName?.ArgumentList != null)
                 _nodeNameOverride =
                     $"    public override string NodeName => {findName.ArgumentList.Arguments.First().ToString()};";
+            
+            var findOverload = node.AttributeLists.SelectMany(i => i.Attributes)
+                .FirstOrDefault(i => i.Name.ToString() == "NodeOverload");
+
+            
+            if (findOverload?.ArgumentList != null)
+                _nodeOverloadAttribute = $"[Grouping({findOverload.ArgumentList.Arguments.First().ToString()})]";
             
             foreach (var u in _usingDeclarations)
             {
