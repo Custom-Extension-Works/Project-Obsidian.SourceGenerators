@@ -165,9 +165,9 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
 {_nodeNameOverride}
 {(_isValidGenericTypeMethod ? $"    public static bool IsValidGenericType => global::{_currentNameSpace}.{_fullName}.IsValidGenericType;" : "")}
     public override System.Type NodeType => typeof (global::{_currentNameSpace}.{_fullName});
-{(!_isAbstract ? $"    public global::{_currentNameSpace}.{_fullName}" + " TypedNodeInstance { get; private set; }" : "")}
-{(!_isAbstract ? "    public override INode NodeInstance => (INode)this.TypedNodeInstance;" : "")}
-{(!_isAbstract ? "    public override void ClearInstance() => this.TypedNodeInstance = null;" : "")}
+{($"    public global::{_currentNameSpace}.{_fullName}" + " TypedNodeInstance { get; private set; }")}
+    public override INode NodeInstance => (INode)this.TypedNodeInstance;
+    public override void ClearInstance() => this.TypedNodeInstance = null;
 {CountOverride}
 {(!_isAbstract ? """
     public override N Instantiate<N>()
@@ -300,7 +300,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
 
             if (node.Modifiers.Any(m => m.ToString() == "abstract") && _currentNameSpace.ToLower().Contains("obsidian"))
             {
-                //_isAbstract = true;
+                _isAbstract = true;
             }
 
             var baseName = node.Identifier.Text;
