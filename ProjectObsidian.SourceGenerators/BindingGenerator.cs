@@ -179,9 +179,10 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
         return localVar as N;
 """ + """
     }
-""" + $"""
-    protected override void AssociateInstanceInternal(INode node) => this.TypedNodeInstance = node is global::{_currentNameSpace}.{_fullName} localVar ? localVar : throw new System.ArgumentException("Node instance is not of type " + typeof (global::{_currentNameSpace}.{_fullName})?.ToString());
 """ : "")}
+{($"""
+    protected override void AssociateInstanceInternal(INode node) => this.TypedNodeInstance = node is global::{_currentNameSpace}.{_fullName} localVar ? localVar : throw new System.ArgumentException("Node instance is not of type " + typeof (global::{_currentNameSpace}.{_fullName})?.ToString());
+""")};
 {GetOverride}
 }}";
                 return str;
@@ -332,6 +333,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
             {
                 _baseTypeNamespace = "FrooxEngine.FrooxEngine.ProtoFlux.";
             }
+
             if (baseTypeName.Contains("AudioNodeBase"))
             {
                 _baseTypeNamespace = "ProtoFlux.Runtimes.Execution.Nodes.Obsidian.Audio.";
