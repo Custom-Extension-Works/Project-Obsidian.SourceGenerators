@@ -240,7 +240,7 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
             if (type == "Operation")
                 UntypedFieldDetection(type, name, "Operation", "global::FrooxEngine.ProtoFlux.SyncNodeOperation", _operationCount);
             if (type == "AsyncOperation")
-                UntypedFieldDetection(type, name, "Operation", "global::FrooxEngine.ProtoFlux.AsyncNodeOperation", _operationCount);
+                UntypedFieldDetection(type, name, "AsyncOperation", "global::FrooxEngine.ProtoFlux.AsyncNodeOperation", _operationCount);
 
             //lists
 
