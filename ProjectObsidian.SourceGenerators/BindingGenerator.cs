@@ -174,7 +174,6 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
     }
     protected override void AssociateInstanceInternal(INode node) => this.TypedNodeInstance = node is global::{_currentNameSpace}.{_fullName} localVar ? localVar : throw new System.ArgumentException("Node instance is not of type " + typeof (global::{_currentNameSpace}.{_fullName})?.ToString());
 """ : "")}
-
 {GetOverride}
 }}";
                 return str;
@@ -290,7 +289,7 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
                 return;
             }
 
-            if (node.Modifiers.Any(m => m.ToString() == "abstract"))
+            if (node.Modifiers.Any(m => m.ToString() == "abstract") && _currentNameSpace.ToLower().Contains("obsidian"))
             {
                 _isAbstract = true;
             }
