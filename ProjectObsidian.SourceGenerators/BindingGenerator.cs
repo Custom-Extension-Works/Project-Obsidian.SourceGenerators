@@ -237,22 +237,26 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
             TypedFieldDetection(type, name, "GlobalRef", "global::FrooxEngine.SyncRef<global::FrooxEngine.ProtoFlux.IGlobalValueProxy<{1}>>", _globalRefCount);
 
             //operations
-            UntypedFieldDetection(type, name, "Operation", "global::FrooxEngine.ProtoFlux.SyncNodeOperation", _operationCount);
-            
+            if (type == "Operation")
+                UntypedFieldDetection(type, name, "Operation", "global::FrooxEngine.ProtoFlux.SyncNodeOperation", _operationCount);
+            if (type == "AsyncOperation")
+                UntypedFieldDetection(type, name, "Operation", "global::FrooxEngine.ProtoFlux.AsyncNodeOperation", _operationCount);
+
             //lists
-            
+
             //input lists
             TypedFieldDetection(type, name, "ValueInputList", "global::FrooxEngine.SyncRefList<global::FrooxEngine.ProtoFlux.INodeValueOutput<{1}>>", _inputListCount);
-            
+
             //output lists
             TypedFieldDetection(type, name, "ObjectInputList", "global::FrooxEngine.SyncRefList<global::FrooxEngine.ProtoFlux.INodeObjectOutput<{1}>>", _outputListCount);
-            
+
             //impulse lists
             UntypedFieldDetection(type, name, "ContinuationList", "global::FrooxEngine.SyncRefList<global::FrooxEngine.ProtoFlux.INodeOperation>", _impulseListCount);
-            
+
             //operation lists
+            UntypedFieldDetection(type, name, "AsyncOperationList", "global::FrooxEngine.SyncList<global::FrooxEngine.ProtoFlux.AsyncNodeOperation>", _operationListCount);
             UntypedFieldDetection(type, name, "SyncOperationList", "global::FrooxEngine.SyncList<global::FrooxEngine.ProtoFlux.SyncNodeOperation>", _operationListCount);
-            
+
             base.VisitFieldDeclaration(node);
         }
         public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
