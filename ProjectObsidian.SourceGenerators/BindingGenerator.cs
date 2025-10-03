@@ -182,7 +182,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
 """ : "")}
 {($"""
     protected override void AssociateInstanceInternal(INode node) => this.TypedNodeInstance = node is global::{_currentNameSpace}.{_fullName} localVar ? localVar : throw new System.ArgumentException("Node instance is not of type " + typeof (global::{_currentNameSpace}.{_fullName})?.ToString());
-""")};
+""")}
 {GetOverride}
 }}";
                 return str;
