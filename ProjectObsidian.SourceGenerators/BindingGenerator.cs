@@ -160,18 +160,21 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
 {_nodeNameOverride}
 {(_isValidGenericTypeMethod ? $"    public static bool IsValidGenericType => global::{_currentNameSpace}.{_fullName}.IsValidGenericType;" : "")}
     public override System.Type NodeType => typeof (global::{_currentNameSpace}.{_fullName});
-    public global::{_currentNameSpace}.{_fullName} TypedNodeInstance {{ get; private set; }}
-    public override INode NodeInstance => (INode)this.TypedNodeInstance;
-    public override void ClearInstance() => this.TypedNodeInstance = null;
+{(!_isAbstract ? "    public global::{_currentNameSpace}.{_fullName} TypedNodeInstance { get; private set; }" : "")}
+{(!_isAbstract ? "    public override INode NodeInstance => (INode)this.TypedNodeInstance;" : "")}
+{(!_isAbstract ? "    public override void ClearInstance() => this.TypedNodeInstance = null;" : "")}
 {CountOverride}
+{(!_isAbstract ? """
     public override N Instantiate<N>()
-    {{
-        if (this.TypedNodeInstance != null) throw new System.InvalidOperationException(""Node has already been instantiated"");
+    {
+        if (this.TypedNodeInstance != null) throw new System.InvalidOperationException("Node has already been instantiated");
         var localVar = new global::{_currentNameSpace}.{_fullName}();
         this.TypedNodeInstance = localVar;
         return localVar as N;
-    }}
-    protected override void AssociateInstanceInternal(INode node) => this.TypedNodeInstance = node is global::{_currentNameSpace}.{_fullName} localVar ? localVar : throw new System.ArgumentException(""Node instance is not of type "" + typeof (global::{_currentNameSpace}.{_fullName})?.ToString());
+    }
+    protected override void AssociateInstanceInternal(INode node) => this.TypedNodeInstance = node is global::{_currentNameSpace}.{_fullName} localVar ? localVar : throw new System.ArgumentException("Node instance is not of type " + typeof (global::{_currentNameSpace}.{_fullName})?.ToString());
+""" : "")}
+
 {GetOverride}
 }}";
                 return str;
@@ -196,6 +199,7 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
         private string _genericTypesAttribute;
         private string _oldTypeNameAttribute;
         private string _nodeOverloadAttribute;
+        private bool _isAbstract;
 
         private bool TypedFieldDetection(string type, string name, string targetTypeName, string declarationFormat, OrderedCount counter)
         {
@@ -288,8 +292,7 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
 
             if (node.Modifiers.Any(m => m.ToString() == "abstract"))
             {
-                base.VisitClassDeclaration(node);
-                return;
+                _isAbstract = true;
             }
 
             var baseName = node.Identifier.Text;
