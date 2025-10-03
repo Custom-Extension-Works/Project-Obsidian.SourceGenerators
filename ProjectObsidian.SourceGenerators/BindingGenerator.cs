@@ -329,7 +329,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
             var baseTypeName = firstBaseType.Type.ToString();
             
             _baseType = baseTypeName;
-            if (node.BaseList.Types.Any(t => t.Type.ToString().Contains("Proxy")))
+            if (baseTypeName.Contains("Proxy"))
             {
                 _baseTypeNamespace = "FrooxEngine.FrooxEngine.ProtoFlux.";
             }
