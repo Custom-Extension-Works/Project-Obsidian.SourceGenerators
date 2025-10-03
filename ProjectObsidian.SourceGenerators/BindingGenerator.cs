@@ -334,7 +334,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
             }
             if (baseTypeName.Contains("AudioNodeBase"))
             {
-                _baseTypeNamespace = "ProtoFlux.Runtimes.Execution.Nodes.Obsidian.Audio";
+                _baseTypeNamespace = "ProtoFlux.Runtimes.Execution.Nodes.Obsidian.Audio.";
             }
 
             if (node.AttributeLists.Any()) // if has any attributes
