@@ -317,42 +317,39 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
                 _baseTypeNamespace = "FrooxEngine.FrooxEngine.ProtoFlux.";
             }
 
-            if (!node.AttributeLists.Any())
+            if (node.AttributeLists.Any()) // if has any attributes
             {
-                base.VisitClassDeclaration(node);
-                return;
+                // category
+                var nodeCategoryAttr = node.AttributeLists.SelectMany(i => i.Attributes)
+                    .FirstOrDefault(i => i.Name.ToString() == "NodeCategory");
+
+                if (nodeCategoryAttr?.ArgumentList is not null)
+                {
+                    _category = nodeCategoryAttr.ArgumentList.Arguments.First().ToString().TrimEnds(1, 1);
+                }
+
+                // generic types
+                _genericTypesAttribute = node.AttributeLists.FirstOrDefault(attrList => attrList.Attributes.Any(attr => attr.Name.ToString() == "GenericTypes"))?.ToString();
+
+                // old type name
+                _oldTypeNameAttribute = node.AttributeLists.FirstOrDefault(attrList => attrList.Attributes.Any(attr => attr.Name.ToString() == "OldTypeName"))?.ToString();
+
+                // name
+                var findName = node.AttributeLists.SelectMany(i => i.Attributes)
+                    .FirstOrDefault(i => i.Name.ToString() == "NodeName");
+
+                if (findName?.ArgumentList != null)
+                    _nodeNameOverride =
+                        $"    public override string NodeName => {findName.ArgumentList.Arguments.First().ToString()};";
+
+                // overload
+                var findOverload = node.AttributeLists.SelectMany(i => i.Attributes)
+                    .FirstOrDefault(i => i.Name.ToString() == "NodeOverload");
+
+                if (findOverload?.ArgumentList != null)
+                    _nodeOverloadAttribute = $"[Grouping({findOverload.ArgumentList.Arguments.First().ToString()})]";
             }
 
-            var find = node.AttributeLists.SelectMany(i => i.Attributes)
-                .FirstOrDefault(i => i.Name.ToString() == "NodeCategory");
-
-            _genericTypesAttribute = node.AttributeLists.FirstOrDefault(attrList => attrList.Attributes.Any(attr => attr.Name.ToString() == "GenericTypes"))?.ToString();
-
-            _oldTypeNameAttribute = node.AttributeLists.FirstOrDefault(attrList => attrList.Attributes.Any(attr => attr.Name.ToString() == "OldTypeName"))?.ToString();
-
-            if (find?.ArgumentList is null)
-            {
-                base.VisitClassDeclaration(node);
-                return;
-            }
-            
-            _category = find.ArgumentList.Arguments.First().ToString().TrimEnds(1,1);
-            
-            var findName = node.AttributeLists.SelectMany(i => i.Attributes)
-                .FirstOrDefault(i => i.Name.ToString() == "NodeName");
-
-
-            if (findName?.ArgumentList != null)
-                _nodeNameOverride =
-                    $"    public override string NodeName => {findName.ArgumentList.Arguments.First().ToString()};";
-            
-            var findOverload = node.AttributeLists.SelectMany(i => i.Attributes)
-                .FirstOrDefault(i => i.Name.ToString() == "NodeOverload");
-
-            
-            if (findOverload?.ArgumentList != null)
-                _nodeOverloadAttribute = $"[Grouping({findOverload.ArgumentList.Arguments.First().ToString()})]";
-            
             foreach (var u in _usingDeclarations)
             {
                 var fullNameSpace = "";
@@ -368,9 +365,9 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
                 _match = match;
                 _fullBaseType = fullNameSpace;
                 _valid = true;
-                base.VisitClassDeclaration(node);
-                return;
+                break;
             }
+
             base.VisitClassDeclaration(node);
         }
     }
