@@ -112,7 +112,8 @@ namespace SourceGenerators
             "AsyncActionFlowNode", 
             "AsyncActionBreakableFlowNode",
 
-            "ProxyVoidNode"
+            "ProxyVoidNode",
+            "AudioNodeBase"
         };
 
         private string UsingEnumerate =>
