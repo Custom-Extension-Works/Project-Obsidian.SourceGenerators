@@ -112,8 +112,7 @@ namespace SourceGenerators
             "AsyncActionFlowNode", 
             "AsyncActionBreakableFlowNode",
 
-            "ProxyVoidNode",
-            "AudioNodeBase"
+            "ProxyVoidNode"
         };
 
         private string UsingEnumerate =>
@@ -334,10 +333,10 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
                 _baseTypeNamespace = "FrooxEngine.FrooxEngine.ProtoFlux.";
             }
 
-            if (baseTypeName.Contains("AudioNodeBase"))
-            {
-                _baseTypeNamespace = "ProtoFlux.Runtimes.Execution.Nodes.Obsidian.Audio.";
-            }
+            //if (baseTypeName.Contains("AudioNodeBase"))
+            //{
+            //    _baseTypeNamespace = "ProtoFlux.Runtimes.Execution.Nodes.Obsidian.Audio.";
+            //}
 
             if (node.AttributeLists.Any()) // if has any attributes
             {
@@ -372,23 +371,25 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
                     _nodeOverloadAttribute = $"[Grouping({findOverload.ArgumentList.Arguments.First().ToString()})]";
             }
 
-            foreach (var u in _usingDeclarations)
-            {
-                var fullNameSpace = "";
-                if (string.IsNullOrEmpty(u))
-                    fullNameSpace = baseTypeName;
-                else
-                    fullNameSpace = u + "." + baseTypeName;
+            //foreach (var u in _usingDeclarations)
+            //{
+            //    var fullNameSpace = "";
+            //    if (string.IsNullOrEmpty(u))
+            //        fullNameSpace = baseTypeName;
+            //    else
+            //        fullNameSpace = u + "." + baseTypeName;
 
-                var match = ValidNodeTypes.FirstOrDefault(i => fullNameSpace.StartsWith(FluxPrefix + i));
+            //    var match = ValidNodeTypes.FirstOrDefault(i => fullNameSpace.StartsWith(FluxPrefix + i));
 
-                if (match is null) continue;
+            //    if (match is null) continue;
                 
-                _match = match;
-                _fullBaseType = fullNameSpace;
-                _valid = true;
-                break;
-            }
+            //    _match = match;
+            //    _fullBaseType = fullNameSpace;
+            //    _valid = true;
+            //    break;
+            //}
+
+            _valid = true;
 
             base.VisitClassDeclaration(node);
         }
