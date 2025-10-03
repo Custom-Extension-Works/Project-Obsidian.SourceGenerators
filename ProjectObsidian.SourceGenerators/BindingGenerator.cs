@@ -298,12 +298,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
                 return;
             }
 
-            if (node.BaseList.Types.Any(t => t.Type.ToString().Contains("ProtoFlux.Runtimes.Execution.ExecutionNode")))
-            {
-                _valid = true;
-            }
-
-            if (node.Modifiers.Any(m => m.ToString() == "abstract") && _currentNameSpace.ToLower().Contains("obsidian"))
+            if (node.Modifiers.Any(m => m.ToString() == "abstract"))// && _currentNameSpace.ToLower().Contains("obsidian"))
             {
                 _isAbstract = true;
             }
@@ -344,11 +339,6 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
                 _baseTypeNamespace = "FrooxEngine.ProtoFlux.Runtimes.Execution.Nodes.Obsidian.Audio.";
             }
 
-            //if (baseTypeName.Contains("AudioNodeBase"))
-            //{
-            //    _baseTypeNamespace = "ProtoFlux.Runtimes.Execution.Nodes.Obsidian.Audio.";
-            //}
-
             if (node.AttributeLists.Any()) // if has any attributes
             {
                 // category
@@ -382,25 +372,23 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
                     _nodeOverloadAttribute = $"[Grouping({findOverload.ArgumentList.Arguments.First().ToString()})]";
             }
 
-            //foreach (var u in _usingDeclarations)
-            //{
-            //    var fullNameSpace = "";
-            //    if (string.IsNullOrEmpty(u))
-            //        fullNameSpace = baseTypeName;
-            //    else
-            //        fullNameSpace = u + "." + baseTypeName;
+            foreach (var u in _usingDeclarations)
+            {
+                var fullNameSpace = "";
+                if (string.IsNullOrEmpty(u))
+                    fullNameSpace = baseTypeName;
+                else
+                    fullNameSpace = u + "." + baseTypeName;
 
-            //    var match = ValidNodeTypes.FirstOrDefault(i => fullNameSpace.StartsWith(FluxPrefix + i));
+                var match = ValidNodeTypes.FirstOrDefault(i => fullNameSpace.StartsWith(FluxPrefix + i));
 
-            //    if (match is null) continue;
+                if (match is null) continue;
 
-            //    _match = match;
-            //    _fullBaseType = fullNameSpace;
-            //    _valid = true;
-            //    break;
-            //}
-
-            //_valid = true;
+                _match = match;
+                _fullBaseType = fullNameSpace;
+                _valid = true;
+                break;
+            }
 
             base.VisitClassDeclaration(node);
         }
