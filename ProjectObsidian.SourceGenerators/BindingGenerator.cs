@@ -298,6 +298,11 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
                 return;
             }
 
+            if (node.BaseList.Types.Any(t => t.Type.ToString().Contains("ExecutionNode")))
+            {
+                _valid = true;
+            }
+
             if (node.Modifiers.Any(m => m.ToString() == "abstract") && _currentNameSpace.ToLower().Contains("obsidian"))
             {
                 _isAbstract = true;
@@ -333,6 +338,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
             {
                 _baseTypeNamespace = "FrooxEngine.FrooxEngine.ProtoFlux.";
             }
+
             if (baseTypeName.Contains("AudioNodeBase"))
             {
                 _baseTypeNamespace = "FrooxEngine.ProtoFlux.Runtimes.Execution.Nodes.Obsidian.Audio.";
@@ -393,6 +399,8 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
             //    _valid = true;
             //    break;
             //}
+
+            _valid = true;
 
             base.VisitClassDeclaration(node);
         }
