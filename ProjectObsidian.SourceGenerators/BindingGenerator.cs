@@ -187,8 +187,7 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
                 return str;
             }
         }
-
-        private readonly List<string> _usingDeclarations = [""];
+        private readonly List<string> _usingDeclarations = ["FrooxEngineContext = FrooxEngine.ProtoFlux.FrooxEngineContext", "INodeOutput = FrooxEngine.ProtoFlux.INodeOutput", "INodeOperation = FrooxEngine.ProtoFlux.INodeOperation"];
         private bool _valid;
         private string _currentNameSpace;
         private string _fullName;
@@ -292,11 +291,11 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
                 var usingName = node.Name.ToString();
                 if (usingName == "FrooxEngine.ProtoFlux")
                     usingName = "FrooxEngine.FrooxEngine.ProtoFlux";
-                if (usingName == "ProtoFlux.Core")
-                {
-                    _usingDeclarations.Add("FrooxEngine.ProtoFlux.Runtimes.Execution");
-                    _usingDeclarations.Add("FrooxEngine.ProtoFlux");
-                }
+                //if (usingName == "ProtoFlux.Core")
+                //{
+                //    _usingDeclarations.Add("FrooxEngine.ProtoFlux.Runtimes.Execution");
+                //    _usingDeclarations.Add("FrooxEngine.ProtoFlux");
+                //}
                     
                 _usingDeclarations.Add(usingName);
             }
