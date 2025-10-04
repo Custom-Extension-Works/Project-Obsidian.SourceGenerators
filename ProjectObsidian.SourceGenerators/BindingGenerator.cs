@@ -195,7 +195,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : {_baseType}
         private string _additionalName = "";
         public string BaseName;
         private string _baseType;
-        private string _baseTypeNamespace = "FrooxEngine.ProtoFlux.Runtimes.Execution.";
+        //private string _baseTypeNamespace = "FrooxEngine.ProtoFlux.Runtimes.Execution.";
         private string _fullBaseType;
         private string _match;
         private string _category;
@@ -287,7 +287,15 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : {_baseType}
 
         public override void VisitUsingDirective(UsingDirectiveSyntax node)
         {
-            if (node.Name is not null) _usingDeclarations.Add(node.Name.ToString());
+            if (node.Name is not null)
+            {
+                var usingName = node.Name.ToString();
+                if (usingName == "FrooxEngine.ProtoFlux")
+                    usingName = "FrooxEngine.FrooxEngine.ProtoFlux";
+                else if (usingName == "ProtoFlux.Core")
+                    usingName = "FrooxEngine.ProtoFlux.Runtimes.Execution";
+                _usingDeclarations.Add(node.Name.ToString());
+            }
             base.VisitUsingDirective(node);
         }
         public override void VisitClassDeclaration(ClassDeclarationSyntax node)
