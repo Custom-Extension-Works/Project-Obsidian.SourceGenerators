@@ -207,6 +207,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
         private string _oldTypeNameAttribute;
         private string _nodeOverloadAttribute;
         private bool _isAbstract;
+        private List<string> BaseTypes = null;
 
         private bool TypedFieldDetection(string type, string name, string targetTypeName, string declarationFormat, OrderedCount counter)
         {
@@ -295,6 +296,19 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
             {
                 base.VisitClassDeclaration(node);
                 return;
+            }
+
+            if (BaseTypes is null)
+            {
+                BaseTypes = new();
+                if (node.BaseList is not null)
+                {
+                    foreach (var baseType in node.BaseList?.Types)
+                    {
+                        BaseTypes.Add(baseType.ToString());
+                    }
+                }
+                File.WriteAllText($"C:\\ObsidianBindingsDebug\\{node.Identifier.Text}_BaseTypes.txt", string.Join(",", BaseTypes));
             }
 
             if (node.Modifiers.Any(m => m.ToString() == "abstract"))
