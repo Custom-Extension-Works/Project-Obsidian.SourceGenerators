@@ -94,6 +94,7 @@ namespace SourceGenerators
         }
         
         public const string BindingPrefix = "Bindings.";
+        public const string LegacyBindingPrefix = "FrooxEngine.";
 
         private string UsingEnumerate =>
             _usingDeclarations
@@ -136,7 +137,7 @@ namespace {BindingPrefix}{_currentNameSpace};
 {_nodeOverloadAttribute}
 {_genericTypesAttribute}
 {_oldTypeNameAttribute}
-{(_backCompat && !_isAbstract ? $"[OldTypeName(\"{"FrooxEngine." + _currentNameSpace + "." + BaseName}\")]" : "")}
+{(!_isAbstract ? $"[OldTypeName(\"{LegacyBindingPrefix + _currentNameSpace + "." + BaseName}\")]" : "")}
 [Category(new string[] {{""ProtoFlux/Runtimes/Execution/Nodes/{_category}""}})]
 public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_constraints}
 {{
@@ -258,16 +259,16 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
         public override void VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
         {
             _currentNameSpace = node.Name.ToString();
-            if (_currentNameSpace.StartsWith("ProtoFlux.Runtimes.Execution.Nodes."))
-                _backCompat = true;
+            //if (_currentNameSpace.StartsWith("ProtoFlux.Runtimes.Execution.Nodes."))
+            //    _backCompat = true;
             base.VisitNamespaceDeclaration(node);
         }
 
         public override void VisitFileScopedNamespaceDeclaration(FileScopedNamespaceDeclarationSyntax node)
         {
             _currentNameSpace = node.Name.ToString();
-            if (_currentNameSpace.StartsWith("ProtoFlux.Runtimes.Execution.Nodes."))
-                _backCompat = true;
+            //if (_currentNameSpace.StartsWith("ProtoFlux.Runtimes.Execution.Nodes."))
+            //    _backCompat = true;
             base.VisitFileScopedNamespaceDeclaration(node);
         }
 
