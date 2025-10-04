@@ -16,6 +16,7 @@ namespace SourceGenerators
     [Generator]
     public class BindingGenerator : ISourceGenerator
     {
+        private const bool DEBUG = false;
         public void Initialize(GeneratorInitializationContext context)
         {
         }
@@ -35,7 +36,8 @@ namespace SourceGenerators
                 if (!string.IsNullOrWhiteSpace(res))
                 {
                     context.AddSource($"{walker.BaseName}Bindings.g.cs", result.ToString());
-                    File.WriteAllText($"C:\\ObsidianBindingsDebug\\{walker.BaseName}Bindings.g.cs", res);
+                    if (DEBUG)
+                        File.WriteAllText($"C:\\ObsidianBindingsDebug\\{walker.BaseName}Bindings.g.cs", res);
                 }
             }
         }
