@@ -137,7 +137,7 @@ namespace {BindingPrefix}{_currentNameSpace};
 {_genericTypesAttribute}
 {_oldTypeNameAttribute}
 {(_backCompat ? $"[OldTypeName(\"{"FrooxEngine." + _currentNameSpace}\")]" : "")}
-[Category(new string[] {{""ProtoFlux/Runtimes/Execution/Nodes/{_category}""}})]
+[Category(new string[] {{""ProtoFlux/Runtimes/Execution/Nodes/{_category}/{BaseName}""}})]
 public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_constraints}
 {{
 {(string.IsNullOrEmpty(_debug) ? "" : "//")}{_debug}
@@ -298,8 +298,8 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
                 _isAbstract = true;
             }
 
-            var baseName = node.Identifier.Text;
-            var fullName = baseName;
+            BaseName = node.Identifier.Text;
+            var fullName = BaseName;
 
             if (node.TypeParameterList is not null)
             {
@@ -312,7 +312,6 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
                 fullName += _additionalName;
             }
             
-            BaseName = baseName;
             _fullName = fullName;
 
             if (node.ConstraintClauses.Any())
