@@ -157,7 +157,7 @@ namespace {BindingPrefix}{_currentNameSpace};
 {_genericTypesAttribute}
 {_oldTypeNameAttribute}
 [Category(new string[] {{""ProtoFlux/Runtimes/Execution/Nodes/{_category}""}})]
-public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_constraints}
+public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : {_baseType} {_constraints}
 {{
 {(string.IsNullOrEmpty(_debug) ? "" : "//")}{_debug}
 {Declarations}
@@ -342,6 +342,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
             var baseTypeName = firstBaseType.Type.ToString();
             
             _baseType = baseTypeName;
+
             //if (baseTypeName.Contains("Proxy"))
             //{
             //    _baseTypeNamespace = "FrooxEngine.FrooxEngine.ProtoFlux.";
