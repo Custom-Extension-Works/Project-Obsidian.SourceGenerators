@@ -60,7 +60,6 @@ namespace SourceGenerators
             {
                 get
                 {
-                    //if (VariableNames.Count == 0) return "";
                     var str = $@"
     protected override {MethodReturnType} {MethodName}(ref int index)
     {{
