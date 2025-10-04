@@ -16,7 +16,7 @@ namespace SourceGenerators
     [Generator]
     public class BindingGenerator : ISourceGenerator
     {
-        private const bool DEBUG = false;
+        private const bool DEBUG = true;
         public void Initialize(GeneratorInitializationContext context)
         {
         }
