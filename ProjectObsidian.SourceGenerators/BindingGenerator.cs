@@ -136,8 +136,8 @@ namespace {BindingPrefix}{_currentNameSpace};
 {_nodeOverloadAttribute}
 {_genericTypesAttribute}
 {_oldTypeNameAttribute}
-{(_backCompat ? $"[OldTypeName(\"{"FrooxEngine." + _currentNameSpace}\")]" : "")}
-[Category(new string[] {{""ProtoFlux/Runtimes/Execution/Nodes/{_category}/{BaseName}""}})]
+{(_backCompat ? $"[OldTypeName(\"{"FrooxEngine." + _currentNameSpace + "." + BaseName}\")]" : "")}
+[Category(new string[] {{""ProtoFlux/Runtimes/Execution/Nodes/{_category}""}})]
 public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_constraints}
 {{
 {(string.IsNullOrEmpty(_debug) ? "" : "//")}{_debug}
