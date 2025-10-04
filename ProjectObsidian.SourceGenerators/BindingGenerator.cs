@@ -95,27 +95,6 @@ namespace SourceGenerators
         }
         
         public const string BindingPrefix = "Bindings.";
-        //public const string FluxPrefix = "ProtoFlux.Runtimes.Execution.";
-
-        //TODO: add more, this is not all of the valid node types
-        public static readonly string[] ValidNodeTypes =
-        {
-            "NestedNode",
-            "VoidNode", 
-            
-            "ObjectFunctionNode", 
-            "ValueFunctionNode", 
-
-            "ActionNode", 
-            "ActionFlowNode",
-            "ActionBreakableFlowNode",
-            
-            "AsyncActionNode", 
-            "AsyncActionFlowNode", 
-            "AsyncActionBreakableFlowNode",
-
-            "ProxyVoidNode"
-        };
 
         private string UsingEnumerate =>
             _usingDeclarations
