@@ -190,7 +190,6 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
         private string _oldTypeNameAttribute;
         private string _nodeOverloadAttribute;
         private bool _isAbstract;
-        private bool _backCompat;
 
         private bool TypedFieldDetection(string type, string name, string targetTypeName, string declarationFormat, OrderedCount counter)
         {
@@ -259,16 +258,12 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
         public override void VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
         {
             _currentNameSpace = node.Name.ToString();
-            //if (_currentNameSpace.StartsWith("ProtoFlux.Runtimes.Execution.Nodes."))
-            //    _backCompat = true;
             base.VisitNamespaceDeclaration(node);
         }
 
         public override void VisitFileScopedNamespaceDeclaration(FileScopedNamespaceDeclarationSyntax node)
         {
             _currentNameSpace = node.Name.ToString();
-            //if (_currentNameSpace.StartsWith("ProtoFlux.Runtimes.Execution.Nodes."))
-            //    _backCompat = true;
             base.VisitFileScopedNamespaceDeclaration(node);
         }
 
