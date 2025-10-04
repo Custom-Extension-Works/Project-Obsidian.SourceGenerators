@@ -298,18 +298,18 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
                 return;
             }
 
-            if (BaseTypes is null)
-            {
-                BaseTypes = new();
-                if (node.BaseList is not null)
-                {
-                    foreach (var baseType in node.BaseList?.Types)
-                    {
-                        BaseTypes.Add(baseType.ToString());
-                    }
-                }
-                File.WriteAllText($"C:\\ObsidianBindingsDebug\\{node.Identifier.Text}_BaseTypes.txt", string.Join(",", BaseTypes));
-            }
+            //if (BaseTypes is null)
+            //{
+            //    BaseTypes = new();
+            //    if (node.BaseList is not null)
+            //    {
+            //        foreach (var baseType in node.BaseList?.Types)
+            //        {
+            //            BaseTypes.Add(baseType.ToString());
+            //        }
+            //    }
+            //    File.WriteAllText($"C:\\ObsidianBindingsDebug\\{node.Identifier.Text}_BaseTypes.txt", string.Join(",", BaseTypes));
+            //}
 
             if (node.Modifiers.Any(m => m.ToString() == "abstract"))
             {
@@ -361,6 +361,7 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
                 if (nodeCategoryAttr?.ArgumentList is not null)
                 {
                     _category = nodeCategoryAttr.ArgumentList.Arguments.First().ToString().TrimEnds(1, 1);
+                    _valid = true;
                 }
 
                 // generic types
@@ -402,8 +403,6 @@ public {(_isAbstract ? "abstract" : "")} partial class {_fullName} : global::{_b
             //    _valid = true;
             //    break;
             //}
-
-            _valid = true;
 
             base.VisitClassDeclaration(node);
         }
