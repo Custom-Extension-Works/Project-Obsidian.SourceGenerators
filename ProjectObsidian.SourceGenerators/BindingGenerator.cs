@@ -295,7 +295,9 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
                 //{
                 //    _usingDeclarations.Add("FrooxEngine.ProtoFlux.Runtimes.Execution");
                 //    _usingDeclarations.Add("FrooxEngine.ProtoFlux");
-                //}
+                //}\
+                if (usingName.StartsWith("ProtoFlux.Runtimes.Execution"))
+                    usingName = "FrooxEngine." + usingName;
                     
                 _usingDeclarations.Add(usingName);
             }
