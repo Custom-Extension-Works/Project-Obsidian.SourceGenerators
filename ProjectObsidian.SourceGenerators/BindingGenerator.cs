@@ -192,7 +192,8 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
             "INodeOutput = FrooxEngine.ProtoFlux.INodeOutput",
             "INodeOperation = FrooxEngine.ProtoFlux.INodeOperation",
             "ExecutionContext = ProtoFlux.Runtimes.Execution.ExecutionContext",
-            "FrooxEngine"];
+            "FrooxEngine",
+            "Elements.Data"];
         private bool _valid;
         private string _currentNameSpace;
         private string _fullName;
