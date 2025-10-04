@@ -92,7 +92,7 @@ namespace SourceGenerators
             }
         }
         
-        public const string BindingPrefix = "FrooxEngine.";
+        public const string BindingPrefix = "";
         public const string FluxPrefix = "ProtoFlux.Runtimes.Execution.";
 
         //TODO: add more, this is not all of the valid node types
