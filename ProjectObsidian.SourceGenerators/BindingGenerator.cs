@@ -200,9 +200,6 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
         private string _additionalName = "";
         public string BaseName;
         private string _baseType;
-        //private string _baseTypeNamespace = "FrooxEngine.ProtoFlux.Runtimes.Execution.";
-        private string _fullBaseType;
-        private string _match;
         private string _category;
         private string _nodeNameOverride = "";
         private string _debug = "";
@@ -301,11 +298,6 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
                 var usingName = node.Name.ToString();
                 if (usingName == "FrooxEngine.ProtoFlux")
                     usingName = "FrooxEngine.FrooxEngine.ProtoFlux";
-                //if (usingName == "ProtoFlux.Core")
-                //{
-                //    _usingDeclarations.Add("FrooxEngine.ProtoFlux.Runtimes.Execution");
-                //    _usingDeclarations.Add("FrooxEngine.ProtoFlux");
-                //}\
                 if (usingName == "ProtoFlux.Runtimes.Execution")
                     usingName = "FrooxEngine." + usingName;
                     
@@ -320,19 +312,6 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
                 base.VisitClassDeclaration(node);
                 return;
             }
-
-            //if (BaseTypes is null)
-            //{
-            //    BaseTypes = new();
-            //    if (node.BaseList is not null)
-            //    {
-            //        foreach (var baseType in node.BaseList?.Types)
-            //        {
-            //            BaseTypes.Add(baseType.ToString());
-            //        }
-            //    }
-            //    File.WriteAllText($"C:\\ObsidianBindingsDebug\\{node.Identifier.Text}_BaseTypes.txt", string.Join(",", BaseTypes));
-            //}
 
             if (node.Modifiers.Any(m => m.ToString() == "abstract"))
             {
@@ -366,16 +345,6 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
             
             _baseType = baseTypeName;
 
-            //if (baseTypeName.Contains("Proxy"))
-            //{
-            //    _baseTypeNamespace = "FrooxEngine.FrooxEngine.ProtoFlux.";
-            //}
-
-            //if (baseTypeName.Contains("AudioNodeBase"))
-            //{
-            //    _baseTypeNamespace = "FrooxEngine.ProtoFlux.Runtimes.Execution.Nodes.Obsidian.Audio.";
-            //}
-
             if (node.AttributeLists.Any()) // if has any attributes
             {
                 // category
@@ -385,7 +354,7 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
                 if (nodeCategoryAttr?.ArgumentList is not null)
                 {
                     _category = nodeCategoryAttr.ArgumentList.Arguments.First().ToString().TrimEnds(1, 1);
-                    _valid = true;
+                    _valid = true; // If it has the NodeCategory attribute it MUST be a node
                 }
 
                 // generic types
@@ -399,34 +368,23 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
                     .FirstOrDefault(i => i.Name.ToString() == "NodeName");
 
                 if (findName?.ArgumentList != null)
+                {
                     _nodeNameOverride =
                         $"    public override string NodeName => {findName.ArgumentList.Arguments.First().ToString()};";
+                    _valid = true;
+                }
+                    
 
                 // overload
                 var findOverload = node.AttributeLists.SelectMany(i => i.Attributes)
                     .FirstOrDefault(i => i.Name.ToString() == "NodeOverload");
 
                 if (findOverload?.ArgumentList != null)
+                {
                     _nodeOverloadAttribute = $"[Grouping({findOverload.ArgumentList.Arguments.First().ToString()})]";
+                    _valid = true;
+                }
             }
-
-            //foreach (var u in _usingDeclarations)
-            //{
-            //    var fullNameSpace = "";
-            //    if (string.IsNullOrEmpty(u))
-            //        fullNameSpace = baseTypeName;
-            //    else
-            //        fullNameSpace = u + "." + baseTypeName;
-
-            //    var match = ValidNodeTypes.FirstOrDefault(i => fullNameSpace.StartsWith(FluxPrefix + i));
-
-            //    if (match is null) continue;
-
-            //    _match = match;
-            //    _fullBaseType = fullNameSpace;
-            //    _valid = true;
-            //    break;
-            //}
 
             base.VisitClassDeclaration(node);
         }
