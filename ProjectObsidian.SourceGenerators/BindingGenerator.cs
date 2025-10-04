@@ -294,7 +294,7 @@ public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_const
                     usingName = "FrooxEngine.FrooxEngine.ProtoFlux";
                 else if (usingName == "ProtoFlux.Core")
                     usingName = "FrooxEngine.ProtoFlux.Runtimes.Execution";
-                _usingDeclarations.Add(node.Name.ToString());
+                _usingDeclarations.Add(usingName);
             }
             base.VisitUsingDirective(node);
         }
