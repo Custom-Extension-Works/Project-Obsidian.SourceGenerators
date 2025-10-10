@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -15,6 +16,7 @@ namespace SourceGenerators
     [Generator]
     public class BindingGenerator : ISourceGenerator
     {
+        private const bool DEBUG = false;
         public void Initialize(GeneratorInitializationContext context)
         {
         }
@@ -32,7 +34,11 @@ namespace SourceGenerators
                 var res = result.ToString();
 
                 if (!string.IsNullOrWhiteSpace(res))
+                {
                     context.AddSource($"{walker.BaseName}Bindings.g.cs", result.ToString());
+                    if (DEBUG)
+                        File.WriteAllText($"C:\\ObsidianBindingsDebug\\{walker.BaseName}Bindings.g.cs", res);
+                }
             }
         }
     }
@@ -54,7 +60,6 @@ namespace SourceGenerators
             {
                 get
                 {
-                    if (VariableNames.Count == 0) return "";
                     var str = $@"
     protected override {MethodReturnType} {MethodName}(ref int index)
     {{
@@ -88,28 +93,8 @@ namespace SourceGenerators
             }
         }
         
-        public const string BindingPrefix = "FrooxEngine.";
-        public const string FluxPrefix = "ProtoFlux.Runtimes.Execution.";
-
-        //TODO: add more, this is not all of the valid node types
-        public static readonly string[] ValidNodeTypes =
-        {
-            "NestedNode",
-            "VoidNode", 
-            
-            "ObjectFunctionNode", 
-            "ValueFunctionNode", 
-
-            "ActionNode", 
-            "ActionFlowNode",
-            "ActionBreakableFlowNode",
-            
-            "AsyncActionNode", 
-            "AsyncActionFlowNode", 
-            "AsyncActionBreakableFlowNode",
-
-            "ProxyVoidNode"
-        };
+        public const string BindingPrefix = "Bindings.";
+        public const string LegacyBindingPrefix = "FrooxEngine.";
 
         private string UsingEnumerate =>
             _usingDeclarations
@@ -152,42 +137,50 @@ namespace {BindingPrefix}{_currentNameSpace};
 {_nodeOverloadAttribute}
 {_genericTypesAttribute}
 {_oldTypeNameAttribute}
+{(!_isAbstract ? $"[OldTypeName(\"{LegacyBindingPrefix + _currentNameSpace + "." + BaseName}\")]" : "")}
 [Category(new string[] {{""ProtoFlux/Runtimes/Execution/Nodes/{_category}""}})]
-public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_constraints}
+public {(_isAbstract ? "abstract" : "")} class {_fullName} : {_baseType} {_constraints}
 {{
 {(string.IsNullOrEmpty(_debug) ? "" : "//")}{_debug}
 {Declarations}
 {_nodeNameOverride}
 {(_isValidGenericTypeMethod ? $"    public static bool IsValidGenericType => global::{_currentNameSpace}.{_fullName}.IsValidGenericType;" : "")}
     public override System.Type NodeType => typeof (global::{_currentNameSpace}.{_fullName});
-    public global::{_currentNameSpace}.{_fullName} TypedNodeInstance {{ get; private set; }}
+{($"    public global::{_currentNameSpace}.{_fullName}" + " TypedNodeInstance { get; private set; }")}
     public override INode NodeInstance => (INode)this.TypedNodeInstance;
     public override void ClearInstance() => this.TypedNodeInstance = null;
 {CountOverride}
+{(!_isAbstract ? """
     public override N Instantiate<N>()
-    {{
-        if (this.TypedNodeInstance != null) throw new System.InvalidOperationException(""Node has already been instantiated"");
+    {
+        if (this.TypedNodeInstance != null) throw new System.InvalidOperationException("Node has already been instantiated");
+""" + $"""
         var localVar = new global::{_currentNameSpace}.{_fullName}();
         this.TypedNodeInstance = localVar;
         return localVar as N;
-    }}
-    protected override void AssociateInstanceInternal(INode node) => this.TypedNodeInstance = node is global::{_currentNameSpace}.{_fullName} localVar ? localVar : throw new System.ArgumentException(""Node instance is not of type "" + typeof (global::{_currentNameSpace}.{_fullName})?.ToString());
+""" + """
+    }
+""" : "")}
+{($"""
+    protected override void AssociateInstanceInternal(INode node) => this.TypedNodeInstance = node is global::{_currentNameSpace}.{_fullName} localVar ? localVar : throw new System.ArgumentException("Node instance is not of type " + typeof (global::{_currentNameSpace}.{_fullName})?.ToString());
+""")}
 {GetOverride}
 }}";
                 return str;
             }
         }
-
-        private readonly List<string> _usingDeclarations = [""];
+        private readonly List<string> _usingDeclarations = ["FrooxEngineContext = FrooxEngine.ProtoFlux.FrooxEngineContext",
+            "INodeOutput = FrooxEngine.ProtoFlux.INodeOutput",
+            "INodeOperation = FrooxEngine.ProtoFlux.INodeOperation",
+            "ExecutionContext = ProtoFlux.Runtimes.Execution.ExecutionContext",
+            "FrooxEngine",
+            "Elements.Data"];
         private bool _valid;
         private string _currentNameSpace;
         private string _fullName;
         private string _additionalName = "";
         public string BaseName;
         private string _baseType;
-        private string _baseTypeNamespace = "FrooxEngine.ProtoFlux.Runtimes.Execution.";
-        private string _fullBaseType;
-        private string _match;
         private string _category;
         private string _nodeNameOverride = "";
         private string _debug = "";
@@ -196,6 +189,7 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
         private string _genericTypesAttribute;
         private string _oldTypeNameAttribute;
         private string _nodeOverloadAttribute;
+        private bool _isAbstract;
 
         private bool TypedFieldDetection(string type, string name, string targetTypeName, string declarationFormat, OrderedCount counter)
         {
@@ -293,7 +287,16 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
 
         public override void VisitUsingDirective(UsingDirectiveSyntax node)
         {
-            if (node.Name is not null) _usingDeclarations.Add(node.Name.ToString());
+            if (node.Name is not null)
+            {
+                var usingName = node.Name.ToString();
+                if (usingName == "FrooxEngine.ProtoFlux")
+                    usingName = "FrooxEngine.FrooxEngine.ProtoFlux";
+                if (usingName == "ProtoFlux.Runtimes.Execution")
+                    usingName = "FrooxEngine." + usingName;
+                    
+                _usingDeclarations.Add(usingName);
+            }
             base.VisitUsingDirective(node);
         }
         public override void VisitClassDeclaration(ClassDeclarationSyntax node)
@@ -304,8 +307,13 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
                 return;
             }
 
-            var baseName = node.Identifier.Text;
-            var fullName = baseName;
+            if (node.Modifiers.Any(m => m.ToString() == "abstract"))
+            {
+                _isAbstract = true;
+            }
+
+            BaseName = node.Identifier.Text;
+            var fullName = BaseName;
 
             if (node.TypeParameterList is not null)
             {
@@ -318,7 +326,6 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
                 fullName += _additionalName;
             }
             
-            BaseName = baseName;
             _fullName = fullName;
 
             if (node.ConstraintClauses.Any())
@@ -330,10 +337,6 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
             var baseTypeName = firstBaseType.Type.ToString();
             
             _baseType = baseTypeName;
-            if (baseTypeName.Contains("ProxyVoidNode"))
-            {
-                _baseTypeNamespace = "FrooxEngine.FrooxEngine.ProtoFlux.";
-            }
 
             if (node.AttributeLists.Any()) // if has any attributes
             {
@@ -344,6 +347,7 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
                 if (nodeCategoryAttr?.ArgumentList is not null)
                 {
                     _category = nodeCategoryAttr.ArgumentList.Arguments.First().ToString().TrimEnds(1, 1);
+                    _valid = true; // If it has the NodeCategory attribute it MUST be a node
                 }
 
                 // generic types
@@ -357,33 +361,22 @@ public partial class {_fullName} : global::{_baseTypeNamespace}{_baseType} {_con
                     .FirstOrDefault(i => i.Name.ToString() == "NodeName");
 
                 if (findName?.ArgumentList != null)
+                {
                     _nodeNameOverride =
                         $"    public override string NodeName => {findName.ArgumentList.Arguments.First().ToString()};";
+                    _valid = true;
+                }
+                    
 
                 // overload
                 var findOverload = node.AttributeLists.SelectMany(i => i.Attributes)
                     .FirstOrDefault(i => i.Name.ToString() == "NodeOverload");
 
                 if (findOverload?.ArgumentList != null)
+                {
                     _nodeOverloadAttribute = $"[Grouping({findOverload.ArgumentList.Arguments.First().ToString()})]";
-            }
-
-            foreach (var u in _usingDeclarations)
-            {
-                var fullNameSpace = "";
-                if (string.IsNullOrEmpty(u))
-                    fullNameSpace = baseTypeName;
-                else
-                    fullNameSpace = u + "." + baseTypeName;
-
-                var match = ValidNodeTypes.FirstOrDefault(i => fullNameSpace.StartsWith(FluxPrefix + i));
-
-                if (match is null) continue;
-                
-                _match = match;
-                _fullBaseType = fullNameSpace;
-                _valid = true;
-                break;
+                    _valid = true;
+                }
             }
 
             base.VisitClassDeclaration(node);
